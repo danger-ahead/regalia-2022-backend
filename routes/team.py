@@ -16,7 +16,7 @@ def get_teams(id: str, token: str = Depends(oauth2_scheme)):
         team = config.regalia22_db["team"]
         team = team.find_one({"_id": id})
         if team is None:
-            return {"success": False}
+            raise HTTPException(status_code=401, detail="You are not authorized")
         return team
     else:
         raise HTTPException(status_code=401, detail="Unauthorized")
@@ -25,9 +25,9 @@ def get_teams(id: str, token: str = Depends(oauth2_scheme)):
 def add_member(team: Team = Body(...), token: str = Depends(oauth2_scheme)):
     try:
         if check_token(token):
-            team = config.regalia22_db["team"]
+            teams = config.regalia22_db["team"]
 
-            team.insert_one(
+            teams.insert_one(
                 {
                     "_id": team.id,
                     "name": team.name,
