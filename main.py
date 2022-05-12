@@ -3,7 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 
 
 from routes import (
-    team
+    team, 
+    regalia_pass,
+    scan
 )
 
 
@@ -20,7 +22,8 @@ app.add_middleware(
 
 
 app.include_router(team.route)
-
+app.include_router(regalia_pass.route)
+app.include_router(scan.route)
 
 @app.get("/")
 def root():
