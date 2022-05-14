@@ -10,6 +10,7 @@ route = APIRouter(prefix="/teams", tags=["Teams"])
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
+
 @route.get("/{id}", status_code=200)
 def get_teams(id: str, token: str = Depends(oauth2_scheme)):
     if check_token(token):
@@ -20,6 +21,7 @@ def get_teams(id: str, token: str = Depends(oauth2_scheme)):
         return team
     else:
         raise HTTPException(status_code=401, detail="Unauthorized")
+
 
 @route.post("/", status_code=201)
 def add_member(team: Team = Body(...), token: str = Depends(oauth2_scheme)):

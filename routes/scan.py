@@ -8,8 +8,9 @@ route = APIRouter(prefix="/scan", tags=["scan"])
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
+
 @route.get("/{id}", status_code=200)
-def get_pass(id:str,token: str = Depends(oauth2_scheme)):
+def get_pass(id: str, token: str = Depends(oauth2_scheme)):
     if check_token(token):
         passes = config.regalia22_db["pass"]
         regalia_pass = passes.find_one({"_id": id})

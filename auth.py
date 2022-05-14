@@ -8,6 +8,6 @@ def check_token(token):
     fernet = Fernet(env_config.token_key)
     decToken = fernet.decrypt(token).decode()
     # lyadh kheye gechilam tai etai hard code kore dilam. actually eta username ta hoto
-    if decToken == 'techtrix22-admin':
+    if decToken == "techtrix22-admin":
         return True
     return False
