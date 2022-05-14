@@ -11,8 +11,9 @@ route = APIRouter(prefix="/pass", tags=["pass"])
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
+
 @route.post("/", status_code=201)
-def add_pass(regalia_pass:Pass,token: str = Depends(oauth2_scheme)):
+def add_pass(regalia_pass: Pass, token: str = Depends(oauth2_scheme)):
     try:
         if check_token(token):
             passes = config.regalia22_db["pass"]
@@ -23,10 +24,10 @@ def add_pass(regalia_pass:Pass,token: str = Depends(oauth2_scheme)):
                     "name": regalia_pass.name,
                     "phone_number": regalia_pass.phone_number,
                     "email": regalia_pass.email,
-                    "allowed":regalia_pass.allowed,
-                    "day_1_validity":regalia_pass.day_1_validity,
-                    "day_2_validity":regalia_pass.day_2_validity,
-                    "roll_number":regalia_pass.roll_number
+                    "allowed": regalia_pass.allowed,
+                    "day_1_validity": regalia_pass.day_1_validity,
+                    "day_2_validity": regalia_pass.day_2_validity,
+                    "roll_number": regalia_pass.roll_number,
                 }
             )
             return regalia_pass
