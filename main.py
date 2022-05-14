@@ -1,8 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
-
-from routes import team, regalia_pass, scan, home,verify
+from routes import team, regalia_pass, scan, home, search,verify
 
 
 app = FastAPI()
@@ -22,6 +20,7 @@ app.include_router(regalia_pass.route)
 app.include_router(scan.route)
 app.include_router(home.route)
 app.include_router(verify.route)
+app.include_router(search.route)
 
 
 @app.get("/")

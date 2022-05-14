@@ -7,8 +7,8 @@ class Pass(BaseModel):
     email: str = Field(...)
     allowed: int = Field(...)
     phone_number: str = Field(...)
-    day_1_validity: bool = Field(...)
-    day_2_validity: bool = Field(...)
+    day_1_validity: str = Field(...)
+    day_2_validity: str = Field(...)
 
     class Config:
         arbitrary_types_allowed = True
