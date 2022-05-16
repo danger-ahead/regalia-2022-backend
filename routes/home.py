@@ -1,5 +1,4 @@
-from fastapi import APIRouter, Body, Depends, HTTPException
-from typing import List
+from fastapi import APIRouter, Depends, HTTPException
 from auth import check_token
 from fastapi.security import OAuth2PasswordBearer
 import config

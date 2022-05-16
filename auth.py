@@ -1,4 +1,3 @@
-from fastapi import HTTPException
 import env_config
 from cryptography.fernet import Fernet
 

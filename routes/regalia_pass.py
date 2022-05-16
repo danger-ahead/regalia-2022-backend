@@ -1,5 +1,4 @@
-from fastapi import APIRouter, Body, Depends, HTTPException
-from typing import List
+from fastapi import APIRouter, Depends, HTTPException
 from auth import check_token
 from fastapi.security import OAuth2PasswordBearer
 import config
@@ -13,7 +12,9 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 @route.post("/", status_code=201)
-def add_pass(regalia_pass: Pass, token: str = Depends(oauth2_scheme)):
+def add_pass(
+    regalia_pass: Pass, count_of_bands: str = "0", token: str = Depends(oauth2_scheme)
+):
     try:
         if check_token(token):
             passes = config.regalia22_db["pass"]
@@ -28,9 +29,22 @@ def add_pass(regalia_pass: Pass, token: str = Depends(oauth2_scheme)):
                     "day_1_validity": regalia_pass.day_1_validity,
                     "day_2_validity": regalia_pass.day_2_validity,
                     "roll_number": regalia_pass.roll_number,
+                    "count_of_bands": count_of_bands,
                 }
             )
-            return regalia_pass
+            
+            return {
+                "_id": uni_id,
+                "name": regalia_pass.name,
+                "phone_number": regalia_pass.phone_number,
+                "email": regalia_pass.email,
+                "allowed": regalia_pass.allowed,
+                "day_1_validity": regalia_pass.day_1_validity,
+                "day_2_validity": regalia_pass.day_2_validity,
+                "roll_number": regalia_pass.roll_number,
+                "count_of_bands": count_of_bands,
+            }
+
         else:
             raise HTTPException(status_code=401, detail="Unauthorized")
 

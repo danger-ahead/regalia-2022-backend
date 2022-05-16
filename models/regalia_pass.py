@@ -6,7 +6,7 @@ class Pass(BaseModel):
     roll_number: str = Field(...)
     email: str = Field(...)
     allowed: int = Field(...)
-    phone_number: str = Field(...)
+    phone_number: str = ""
     day_1_validity: str = Field(...)
     day_2_validity: str = Field(...)
 
