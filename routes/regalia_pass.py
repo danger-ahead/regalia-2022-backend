@@ -19,8 +19,23 @@ def add_pass(
         if check_token(token):
             passes = config.regalia22_db["pass"]
             uni_id = generate_unique_id()
-            passes.insert_one(
-                {
+            if passes.find_one({"email": regalia_pass.email}) is None:
+                passes.insert_one(
+                    {
+                        "_id": uni_id,
+                        "name": regalia_pass.name,
+                        "phone_number": regalia_pass.phone_number,
+                        "email": regalia_pass.email,
+                        "allowed": regalia_pass.allowed,
+                        "day_1_validity": regalia_pass.day_1_validity,
+                        "day_2_validity": regalia_pass.day_2_validity,
+                        "roll_number": regalia_pass.roll_number,
+                        "count_of_bands_day_1": count_of_bands,
+                        "count_of_bands_day_2": count_of_bands,
+                    }
+                )
+
+                return {
                     "_id": uni_id,
                     "name": regalia_pass.name,
                     "phone_number": regalia_pass.phone_number,
@@ -32,19 +47,9 @@ def add_pass(
                     "count_of_bands_day_1": count_of_bands,
                     "count_of_bands_day_2": count_of_bands,
                 }
-            )
 
-            return {
-                "_id": uni_id,
-                "name": regalia_pass.name,
-                "phone_number": regalia_pass.phone_number,
-                "email": regalia_pass.email,
-                "allowed": regalia_pass.allowed,
-                "day_1_validity": regalia_pass.day_1_validity,
-                "day_2_validity": regalia_pass.day_2_validity,
-                "roll_number": regalia_pass.roll_number,
-                "count_of_bands": count_of_bands,
-            }
+            else:
+                raise HTTPException(status_code=401, detail="Already Exists")
 
         else:
             raise HTTPException(status_code=401, detail="Unauthorized")
