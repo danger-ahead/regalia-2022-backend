@@ -19,107 +19,53 @@ def verify_pass(
         passes = config.regalia22_db["pass"]
         today = str(date.today())
         today = today.split("-")[2]
-        if count_of_bands:
-            if today == config.days[0]:
-                if (
-                    passes.count_documents(
-                        {
-                            "_id": unique_id,
-                            "day_1_validity": {"$regex": "^$"},
-                        }
-                    )
-                    == 1
-                ):
-                    passes.update_one(
-                        {"_id": unique_id},
-                        {
-                            "$set": {
-                                "day_1_validity": str(datetime.now()),
-                                "count_of_bands": count_of_bands,
-                            }
-                        },
-                    )
-                else:
-                    raise HTTPException(
-                        status_code=406,
-                        detail="already verified or not found",
-                    )
-            elif today == config.days[1]:
-                if (
-                    passes.count_documents(
-                        {
-                            "_id": unique_id,
-                            "day_2_validity": {"$regex": "^$"},
-                        }
-                    )
-                    == 1
-                ):
-                    passes.update_one(
-                        {"_id": unique_id},
-                        {
-                            "$set": {
-                                "day_2_validity": str(datetime.now()),
-                                "count_of_bands": count_of_bands,
-                            }
-                        },
-                    )
-                else:
-                    raise HTTPException(
-                        status_code=406,
-                        detail="already verified or not found",
-                    )
-            else:
-                return {"message": "invalid date"}
+        if today == config.days[0]:
+            pass_obj = passes.find_one({"_id": unique_id})
+            if pass_obj["day_1_validity"] == "":
+                passes.update_one(
+                    {"_id": unique_id}, {"day_1_validity": str(datetime.now())}
+                )
 
-        else:
-            if today == config.days[0]:
-                if (
-                    passes.count_documents(
-                        {
-                            "_id": unique_id,
-                            "day_1_validity": {"$regex": "^$"},
-                        }
-                    )
-                    == 1
-                ):
-                    passes.update_one(
-                        {"_id": unique_id},
-                        {
-                            "$set": {
-                                "day_1_validity": str(datetime.now()),
-                            }
-                        },
-                    )
-                else:
-                    raise HTTPException(
-                        status_code=406,
-                        detail="already verified or not found",
-                    )
-            elif today == config.days[1]:
-                if (
-                    passes.count_documents(
-                        {
-                            "_id": unique_id,
-                            "day_2_validity": {"$regex": "^$"},
-                        }
-                    )
-                    == 1
-                ):
-                    passes.update_one(
-                        {"_id": unique_id},
-                        {
-                            "$set": {
-                                "day_2_validity": str(datetime.now()),
-                            }
-                        },
-                    )
-                else:
-                    raise HTTPException(
-                        status_code=406,
-                        detail="already verified or not found",
-                    )
-            else:
-                return {"message": "invalid date"}
+            if pass_obj["count_of_bands_day_1"] == pass_obj["allowed"]:
+                raise HTTPException(status_code=401, detail="Exhausted")
+            elif (
+                pass_obj["count_of_bands_day_1"] + count_of_bands <= pass_obj["allowed"]
+            ):
+                passes.update_one(
+                    {"_id": unique_id},
+                    {
+                        "count_of_bands_day_1": pass_obj["count_of_bands_day_1"]
+                        + count_of_bands
+                    },
+                )
+            elif (
+                pass_obj["count_of_bands_day_1"] + count_of_bands > pass_obj["allowed"]
+            ):
+                raise HTTPException(status_code=401, detail="Not Allowed")
+
+        elif today == config.days[1]:
+            pass_obj = passes.find_one({"_id": unique_id})
+            if pass_obj["day_2_validity"] == "":
+                passes.update_one(
+                    {"_id": unique_id}, {"day_2_validity": str(datetime.now())}
+                )
+
+            if pass_obj["count_of_bands_day_2"] == pass_obj["allowed"]:
+                raise HTTPException(status_code=401, detail="Exhausted")
+            elif (
+                pass_obj["count_of_bands_day_2"] + count_of_bands <= pass_obj["allowed"]
+            ):
+                passes.update_one(
+                    {"_id": unique_id},
+                    {
+                        "count_of_bands_day_2": pass_obj["count_of_bands_day_2"]
+                        + count_of_bands
+                    },
+                )
+            elif (
+                pass_obj["count_of_bands_day_2"] + count_of_bands > pass_obj["allowed"]
+            ):
+                raise HTTPException(status_code=401, detail="Not Allowed")
 
         return {"message": "verified"}
 

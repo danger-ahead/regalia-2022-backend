@@ -13,7 +13,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 @route.post("/", status_code=201)
 def add_pass(
-    regalia_pass: Pass, count_of_bands: str = "0", token: str = Depends(oauth2_scheme)
+    regalia_pass: Pass, count_of_bands: int = 0, token: str = Depends(oauth2_scheme)
 ):
     try:
         if check_token(token):
@@ -29,10 +29,11 @@ def add_pass(
                     "day_1_validity": regalia_pass.day_1_validity,
                     "day_2_validity": regalia_pass.day_2_validity,
                     "roll_number": regalia_pass.roll_number,
-                    "count_of_bands": count_of_bands,
+                    "count_of_bands_day_1": count_of_bands,
+                    "count_of_bands_day_2": count_of_bands,
                 }
             )
-            
+
             return {
                 "_id": uni_id,
                 "name": regalia_pass.name,
