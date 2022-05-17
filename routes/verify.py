@@ -23,7 +23,7 @@ def verify_pass(
             pass_obj = passes.find_one({"_id": unique_id})
             if pass_obj["day_1_validity"] == "":
                 passes.update_one(
-                    {"_id": unique_id}, {"day_1_validity": str(datetime.now())}
+                    {"_id": unique_id}, {"$set": {"day_1_validity": str(datetime.now())}}
                 )
 
             if pass_obj["count_of_bands_day_1"] == pass_obj["allowed"]:
@@ -33,10 +33,10 @@ def verify_pass(
             ):
                 passes.update_one(
                     {"_id": unique_id},
-                    {
+                    {"$set": {
                         "count_of_bands_day_1": pass_obj["count_of_bands_day_1"]
                         + count_of_bands
-                    },
+                    },}
                 )
             elif (
                 pass_obj["count_of_bands_day_1"] + count_of_bands > pass_obj["allowed"]
@@ -47,7 +47,7 @@ def verify_pass(
             pass_obj = passes.find_one({"_id": unique_id})
             if pass_obj["day_2_validity"] == "":
                 passes.update_one(
-                    {"_id": unique_id}, {"day_2_validity": str(datetime.now())}
+                    {"_id": unique_id}, {"$set": {"day_2_validity": str(datetime.now())}}
                 )
 
             if pass_obj["count_of_bands_day_2"] == pass_obj["allowed"]:
@@ -57,10 +57,10 @@ def verify_pass(
             ):
                 passes.update_one(
                     {"_id": unique_id},
-                    {
+                    {"$set": {
                         "count_of_bands_day_2": pass_obj["count_of_bands_day_2"]
                         + count_of_bands
-                    },
+                    },}
                 )
             elif (
                 pass_obj["count_of_bands_day_2"] + count_of_bands > pass_obj["allowed"]
