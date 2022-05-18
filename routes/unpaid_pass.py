@@ -21,7 +21,7 @@ def add_unpaid_pass(
             unpaid_passes.insert_one(
                 {
                     "name": unpaid_pass.name,
-                    "roll": unpaid_pass.roll,
+                    "roll_number": unpaid_pass.roll_number,
                     "passing_year":unpaid_pass.passing_year,
                     "department":unpaid_pass.department,
                     "_id": str(datetime.now()),
