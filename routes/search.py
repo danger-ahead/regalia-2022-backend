@@ -10,7 +10,7 @@ route = APIRouter(prefix="/search", tags=["Search"])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-@route.get("/", status_code=200)
+@route.post("/", status_code=200)
 def search_email(
     other_body: OtherBody = Body(...), token: str = Depends(oauth2_scheme)
 ):
