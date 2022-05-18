@@ -15,7 +15,10 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 @route.post("/", status_code=201)
 def add_pass(
-    response: Response, regalia_pass: Pass, count_of_bands: int = 0, token: str = Depends(oauth2_scheme)
+    response: Response,
+    regalia_pass: Pass,
+    count_of_bands: int = 0,
+    token: str = Depends(oauth2_scheme),
 ):
     try:
         if check_token(token):
@@ -38,6 +41,14 @@ def add_pass(
                     }
                 )
 
+                if regalia_pass.server:
+                    generate_pass.makeCertificate(
+                        regalia_pass.email,
+                        regalia_pass.name,
+                        regalia_pass.roll_number,
+                        regalia_pass.allowed,
+                    )
+
                 return {
                     "_id": uni_id,
                     "name": regalia_pass.name,
@@ -54,7 +65,7 @@ def add_pass(
 
             else:
                 response.status_code = 401
-                pass_obj['created_now'] = False
+                pass_obj["created_now"] = False
                 return pass_obj
 
         else:
@@ -65,7 +76,9 @@ def add_pass(
 
 
 @route.patch("/resend_mail", status_code=201)
-def resend_pass(response: Response, other_body: OtherBody, token: str = Depends(oauth2_scheme)):
+def resend_pass(
+    response: Response, other_body: OtherBody, token: str = Depends(oauth2_scheme)
+):
     try:
         if check_token(token):
             passes = config.regalia22_db["pass"]
@@ -78,7 +91,12 @@ def resend_pass(response: Response, other_body: OtherBody, token: str = Depends(
                     {"_id": other_body.uid},
                     {"$set": {"email": other_body.email}},
                 )
-                generate_pass.makeCertificate(other_body.email, pass_obj["name"], pass_obj["roll_number"], pass_obj["allowed"])
+                generate_pass.makeCertificate(
+                    other_body.email,
+                    pass_obj["name"],
+                    pass_obj["roll_number"],
+                    pass_obj["allowed"],
+                )
 
                 return {"message": "mail sent"}
 

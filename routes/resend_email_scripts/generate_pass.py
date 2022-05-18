@@ -4,8 +4,12 @@ from routes.resend_email_scripts import mail
 from routes.resend_email_scripts import create_pass
 
 template = Image.open("routes/resend_email_scripts/templates/pass_template.png")
-detailsFont = ImageFont.truetype("routes/resend_email_scripts/templates/fonts/Poppins-Regular.ttf", 60)
-allowedFont = ImageFont.truetype("routes/resend_email_scripts/templates/fonts/Poppins-SemiBold.ttf", 65)
+detailsFont = ImageFont.truetype(
+    "routes/resend_email_scripts/templates/fonts/Poppins-Regular.ttf", 60
+)
+allowedFont = ImageFont.truetype(
+    "routes/resend_email_scripts/templates/fonts/Poppins-SemiBold.ttf", 65
+)
 
 
 def makeCertificate(email, name, roll_number, allowed):
@@ -28,7 +32,10 @@ def makeCertificate(email, name, roll_number, allowed):
     # name
     nameFont = 150
     w, h = draw.textsize(
-        name.upper(), ImageFont.truetype("routes/resend_email_scripts/templates/fonts/Poppins-Bold.ttf", nameFont)
+        name.upper(),
+        ImageFont.truetype(
+            "routes/resend_email_scripts/templates/fonts/Poppins-Bold.ttf", nameFont
+        ),
     )
     difference = w - (1682 - 440)
     if difference > 0 and difference <= 100:
@@ -45,7 +52,9 @@ def makeCertificate(email, name, roll_number, allowed):
         xy=(220, 1450),
         text=name.upper(),
         fill="white",
-        font=ImageFont.truetype("routes/resend_email_scripts/templates/fonts/Poppins-Bold.ttf", nameFont),
+        font=ImageFont.truetype(
+            "routes/resend_email_scripts/templates/fonts/Poppins-Bold.ttf", nameFont
+        ),
     )
     # email
     draw.text(xy=(220, 1650), text=email, fill="white", font=detailsFont)
@@ -67,8 +76,11 @@ def makeCertificate(email, name, roll_number, allowed):
 
 
 def makeQR(data):
-        qr = pyqrcode.create(data)
-        qr.png(
-            "routes/resend_email_scripts/templates/qr_code.png", scale=30, module_color="#03045E", background="#538EFF"
-        )
-        return qr.get_png_size(30)
+    qr = pyqrcode.create(data)
+    qr.png(
+        "routes/resend_email_scripts/templates/qr_code.png",
+        scale=30,
+        module_color="#03045E",
+        background="#538EFF",
+    )
+    return qr.get_png_size(30)

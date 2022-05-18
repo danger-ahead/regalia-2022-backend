@@ -1,6 +1,16 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routes import team, regalia_pass, scan, home, search, verify, guest, participant ,unpaid_pass
+from routes import (
+    team,
+    regalia_pass,
+    scan,
+    home,
+    search,
+    verify,
+    guest,
+    participant,
+    unpaid_pass,
+)
 
 
 app = FastAPI()

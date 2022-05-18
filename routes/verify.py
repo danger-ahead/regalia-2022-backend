@@ -12,8 +12,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 @route.patch("/{unique_id}", status_code=200)
 def verify_pass(
     unique_id: str,
+    count_of_bands: int,
     token: str = Depends(oauth2_scheme),
-    count_of_bands: int | None = None,
 ):
     if check_token(token):
         passes = config.regalia22_db["pass"]

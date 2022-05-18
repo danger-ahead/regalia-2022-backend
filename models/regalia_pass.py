@@ -9,6 +9,7 @@ class Pass(BaseModel):
     phone_number: str = ""
     day_1_validity: str = Field(...)
     day_2_validity: str = Field(...)
+    server: bool = False
 
     class Config:
         arbitrary_types_allowed = True

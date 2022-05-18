@@ -11,6 +11,7 @@ route = APIRouter(prefix="/unpaid_pass", tags=["unpaid_pass"])
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
+
 @route.post("/", status_code=201)
 def add_unpaid_pass(
     unpaid_pass: Unpaid_pass = Body(...), token: str = Depends(oauth2_scheme)
@@ -22,8 +23,8 @@ def add_unpaid_pass(
                 {
                     "name": unpaid_pass.name,
                     "roll_number": unpaid_pass.roll_number,
-                    "passing_year":unpaid_pass.passing_year,
-                    "department":unpaid_pass.department,
+                    "passing_year": unpaid_pass.passing_year,
+                    "department": unpaid_pass.department,
                     "_id": str(datetime.now()),
                 }
             )
