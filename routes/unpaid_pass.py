@@ -1,6 +1,5 @@
 from datetime import datetime
 from fastapi import APIRouter, Body, Depends, HTTPException
-from typing import List
 from auth import check_token
 from fastapi.security import OAuth2PasswordBearer
 import config
@@ -24,11 +23,14 @@ def add_unpaid_pass(
                     "name": unpaid_pass.name,
                     "roll_number": unpaid_pass.roll_number,
                     "passing_year": unpaid_pass.passing_year,
+                    "phone": unpaid_pass.phone,
+                    "email": unpaid_pass.email,
                     "department": unpaid_pass.department,
                     "_id": str(datetime.now()),
                 }
             )
             return unpaid_pass
+
         else:
             raise HTTPException(status_code=401, detail="Unauthorized")
     except Exception as e:

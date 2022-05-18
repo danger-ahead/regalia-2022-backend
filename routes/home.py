@@ -129,7 +129,7 @@ def home(token: str = Depends(oauth2_scheme)):
 
         return {
             "label": label,
-             "pass_total": pass_obj.count_documents({}),
+            "pass_total": pass_obj.count_documents({}),
             "unpaid_pass_total": unpaid_pass_obj.count_documents({}),
             "total": total,
             "categorized": {
@@ -140,7 +140,14 @@ def home(token: str = Depends(oauth2_scheme)):
                 "aeie_count": aeie_count,
                 "bca_count": bca_count,
                 "mca_count": mca_count,
-                "others": total - cse_count - ece_count - ee_count - it_count - aeie_count - bca_count - mca_count,
+                "others": total
+                - cse_count
+                - ece_count
+                - ee_count
+                - it_count
+                - aeie_count
+                - bca_count
+                - mca_count,
             },
         }
 
