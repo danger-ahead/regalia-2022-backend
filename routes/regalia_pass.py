@@ -3,7 +3,9 @@ from auth import check_token
 from fastapi.security import OAuth2PasswordBearer
 import config
 from models.regalia_pass import Pass
+from models.other_body import OtherBody
 from unique_id import generate_unique_id
+from routes.resend_email_scripts import generate_pass
 
 
 route = APIRouter(prefix="/pass", tags=["pass"])
@@ -13,7 +15,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 @route.post("/", status_code=201)
 def add_pass(
-    response: Response, regalia_pass: Pass, count_of_bands: int = 0, token: str = Depends(oauth2_scheme)
+    response: Response, regalia_pass: Pass, send_mail: bool, count_of_bands: int = 0, token: str = Depends(oauth2_scheme)
 ):
     try:
         if check_token(token):
@@ -57,6 +59,28 @@ def add_pass(
 
         else:
             raise HTTPException(status_code=401, detail="Unauthorized")
+
+    except Exception as e:
+        raise HTTPException(status_code=409, detail=str(e))
+
+
+@route.patch("/resend_mail", status_code=201)
+def resend_pass(response: Response, other_body: OtherBody, token: str = Depends(oauth2_scheme)):
+    try:
+        if check_token(token):
+            passes = config.regalia22_db["pass"]
+            pass_obj = passes.find_one({"roll_number": other_body.roll_no})
+            if pass_obj is None:
+                response.status_code = 401
+                return {"message": "Not Found"}
+            else:
+                passes.update_one(
+                    {"roll_number": other_body.roll_no},
+                    {"$set": {"email": other_body.email}},
+                )
+                generate_pass.makeCertificate(other_body.email, pass_obj["name"], pass_obj["roll_number"], pass_obj["allowed"])
+
+                return {"message": "mail sent"}
 
     except Exception as e:
         raise HTTPException(status_code=409, detail=str(e))

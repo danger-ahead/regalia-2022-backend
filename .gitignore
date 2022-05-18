@@ -3,3 +3,4 @@
 *.pyc
 .env
 /py_regalia22
+__pycache__/main.cpython-310.pyc.140552085097616
