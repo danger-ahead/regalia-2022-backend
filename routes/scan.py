@@ -16,7 +16,7 @@ def get_pass(id: str, token: str = Depends(oauth2_scheme)):
         regalia_pass = passes.find_one({"_id": id})
         if regalia_pass is None:
             raise HTTPException(status_code=401, detail="Not found")
-        regalia_pass['date'] = str(date.today()).split("-")[2]
+        regalia_pass["date"] = str(date.today()).split("-")[2]
         return regalia_pass
     else:
         raise HTTPException(status_code=401, detail="Unauthorized")
