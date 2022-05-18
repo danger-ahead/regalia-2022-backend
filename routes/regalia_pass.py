@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from auth import check_token
 from fastapi.security import OAuth2PasswordBearer
 import config
@@ -13,13 +13,14 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 @route.post("/", status_code=201)
 def add_pass(
-    regalia_pass: Pass, count_of_bands: int = 0, token: str = Depends(oauth2_scheme)
+    response: Response, regalia_pass: Pass, count_of_bands: int = 0, token: str = Depends(oauth2_scheme)
 ):
     try:
         if check_token(token):
             passes = config.regalia22_db["pass"]
             uni_id = generate_unique_id()
-            if passes.find_one({"email": regalia_pass.email}) is None:
+            pass_obj = passes.find_one({"email": regalia_pass.email})
+            if pass_obj is None:
                 passes.insert_one(
                     {
                         "_id": uni_id,
@@ -46,10 +47,13 @@ def add_pass(
                     "roll_number": regalia_pass.roll_number,
                     "count_of_bands_day_1": count_of_bands,
                     "count_of_bands_day_2": count_of_bands,
+                    "created_now": True,
                 }
 
             else:
-                raise HTTPException(status_code=401, detail="Already Exists")
+                response.status_code = 401
+                pass_obj['created_now'] = False
+                return pass_obj
 
         else:
             raise HTTPException(status_code=401, detail="Unauthorized")
