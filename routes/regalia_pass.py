@@ -15,7 +15,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 @route.post("/", status_code=201)
 def add_pass(
-    response: Response, regalia_pass: Pass, send_mail: bool, count_of_bands: int = 0, token: str = Depends(oauth2_scheme)
+    response: Response, regalia_pass: Pass, count_of_bands: int = 0, token: str = Depends(oauth2_scheme)
 ):
     try:
         if check_token(token):
@@ -69,13 +69,13 @@ def resend_pass(response: Response, other_body: OtherBody, token: str = Depends(
     try:
         if check_token(token):
             passes = config.regalia22_db["pass"]
-            pass_obj = passes.find_one({"roll_number": other_body.roll_no})
+            pass_obj = passes.find_one({"_id": other_body.uid})
             if pass_obj is None:
                 response.status_code = 401
                 return {"message": "Not Found"}
             else:
                 passes.update_one(
-                    {"roll_number": other_body.roll_no},
+                    {"_id": other_body.uid},
                     {"$set": {"email": other_body.email}},
                 )
                 generate_pass.makeCertificate(other_body.email, pass_obj["name"], pass_obj["roll_number"], pass_obj["allowed"])
