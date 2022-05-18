@@ -13,6 +13,9 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 def home(token: str = Depends(oauth2_scheme)):
     if check_token(token):
         pass_obj = config.regalia22_db["pass"]
+        unpaid_pass_obj = config.regalia22_db["unpaid_pass"]
+
+        total = pass_obj.count_documents({})
 
         today = str(date.today())
 
@@ -25,6 +28,8 @@ def home(token: str = Depends(oauth2_scheme)):
         ee_count = 0
         it_count = 0
         aeie_count = 0
+        bca_count = 0
+        mca_count = 0
 
         if today == config.days[0]:
             label = "Day 1"
@@ -59,6 +64,18 @@ def home(token: str = Depends(oauth2_scheme)):
                 {
                     "day_1_validity": {"$not": {"$regex": "^$"}},
                     "roll_number": {"$regex": "aeie", "$options": "i"},
+                }
+            )
+            bca_count = pass_obj.count_documents(
+                {
+                    "day_1_validity": {"$not": {"$regex": "^$"}},
+                    "roll_number": {"$regex": "bca", "$options": "i"},
+                }
+            )
+            mca_count = pass_obj.count_documents(
+                {
+                    "day_1_validity": {"$not": {"$regex": "^$"}},
+                    "roll_number": {"$regex": "mca", "$options": "i"},
                 }
             )
 
@@ -97,9 +114,23 @@ def home(token: str = Depends(oauth2_scheme)):
                     "roll_number": {"$regex": "aeie", "$options": "i"},
                 }
             )
+            bca_count = pass_obj.count_documents(
+                {
+                    "day_2_validity": {"$not": {"$regex": "^$"}},
+                    "roll_number": {"$regex": "bca", "$options": "i"},
+                }
+            )
+            mca_count = pass_obj.count_documents(
+                {
+                    "day_2_validity": {"$not": {"$regex": "^$"}},
+                    "roll_number": {"$regex": "mca", "$options": "i"},
+                }
+            )
 
         return {
             "label": label,
+             "pass_total": pass_obj.count_documents({}),
+            "unpaid_pass_total": unpaid_pass_obj.count_documents({}),
             "total": total,
             "categorized": {
                 "cse_count": cse_count,
@@ -107,6 +138,9 @@ def home(token: str = Depends(oauth2_scheme)):
                 "ee_count": ee_count,
                 "it_count": it_count,
                 "aeie_count": aeie_count,
+                "bca_count": bca_count,
+                "mca_count": mca_count,
+                "others": total - cse_count - ece_count - ee_count - it_count - aeie_count - bca_count - mca_count,
             },
         }
 
