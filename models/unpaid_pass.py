@@ -3,7 +3,7 @@ from pydantic import Field, BaseModel
 
 class Unpaid_pass(BaseModel):
     name: str = Field(...)
-    roll: str  = ""
+    roll_number: str  = ""
     passing_year: str = ""
     department: str = Field(...)
 
