@@ -13,7 +13,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 @route.get("/", status_code=200)
-def get_teams(token: str = Depends(oauth2_scheme)):
+def get_guests(token: str = Depends(oauth2_scheme)):
     if check_token(token):
         guests = config.regalia22_db["guest"]
         guests = list(guests.find())
@@ -23,7 +23,7 @@ def get_teams(token: str = Depends(oauth2_scheme)):
 
 
 @route.post("/", status_code=201)
-def add_member(guest: Guest = Body(...), token: str = Depends(oauth2_scheme)):
+def add_guest(guest: Guest = Body(...), token: str = Depends(oauth2_scheme)):
     try:
         if check_token(token):
             guests = config.regalia22_db["guest"]
