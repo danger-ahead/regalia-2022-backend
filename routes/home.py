@@ -23,6 +23,7 @@ def home(token: str = Depends(oauth2_scheme)):
 
         label = ""
         total = 0
+        total_extra = 0
         cse_count = 0
         ece_count = 0
         ee_count = 0
@@ -78,6 +79,20 @@ def home(token: str = Depends(oauth2_scheme)):
                     "roll_number": {"$regex": "mca", "$options": "i"},
                 }
             )
+            total_extra = list(
+                pass_obj.aggregate(
+                    [
+                        {
+                            "$group": {
+                                "_id": "",
+                                "count_of_bands_day_1": {
+                                    "$sum": "$count_of_bands_day_1"
+                                },
+                            }
+                        }
+                    ]
+                )
+            )[0]["count_of_bands_day_1"]
 
         elif today == config.days[1]:
             label = "Day 2"
@@ -126,12 +141,27 @@ def home(token: str = Depends(oauth2_scheme)):
                     "roll_number": {"$regex": "mca", "$options": "i"},
                 }
             )
+            total_extra = list(
+                pass_obj.aggregate(
+                    [
+                        {
+                            "$group": {
+                                "_id": "",
+                                "count_of_bands_day_2": {
+                                    "$sum": "$count_of_bands_day_2"
+                                },
+                            }
+                        }
+                    ]
+                )
+            )[0]["count_of_bands_day_2"]
 
         return {
             "label": label,
             "pass_total": pass_obj.count_documents({}),
             "unpaid_pass_total": unpaid_pass_obj.count_documents({}),
             "total": total,
+            "extra_count": total_extra,
             "categorized": {
                 "cse_count": cse_count,
                 "ece_count": ece_count,
